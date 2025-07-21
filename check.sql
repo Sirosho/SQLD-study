@@ -1,1 +1,2 @@
-SELECT * FROM POST_TAGS;
+SELECT * FROM USERS;
+select * from POSTS;
