@@ -104,9 +104,59 @@ FROM POSTS
 WHERE creation_date > TO_DATE('2024-05-20', 'YYYY-MM-DD');
 
 
+-- 춘식이(bio 있음)와 케로피(bio 없음)의 프로필을 예시로 NULL 함수를 써봅시다.
+SELECT
+    u.username,
+    p.bio,
+    -- 파라미터 a가 null 일경우 b가 나옴
+    NVL(p.bio, '자기소개가 없습니다.') AS "NVL 처리",
+    -- a가 null이 아니면 b가 나오고 null이면 c가 나옴
+    NVL2(p.bio, '✅ 프로필 있음', '❌ 프로필 없음') AS "NVL2 처리"
+FROM
+    USERS u, USER_PROFILES p
+WHERE
+    u.user_id = p.user_id(+) AND u.user_id IN (2, 14);
 
 
 
+-- 어떤 수와 null을 연산하면 무조건 null 이 나옴
+-- nullif는 0으로 나눗셈을 하여 에러가 나는것을 방지하기 위해서도 쓰임
+-- null로 나눠지면 null이 나오지만 에러는 x
+--SELECT
+    --product_id,
+    --product_name,
+    --total_price / NULLIF(total_quantity, 0) AS average_price_per_item
+--FROM
+  --  order_items;
 
 
+
+-- 인수 목록에서 첫 번째 NULL이 아닌 값을 반환합니다.
+-- 모든 인수가 NULL이면 NULL을 반환합니다.
+SELECT
+    COALESCE(null, null, 50, 100) A,
+    COALESCE(900, null, null, 100) B,
+    COALESCE(null, 888, 50, null) C
+FROM DUAL
+;
+
+-- 가입 연도에 따라 등급을 나누고, 게시물 종류를 한글로 바꿔봅시다.
+SELECT
+    username,
+    registration_date,
+    CASE
+        WHEN TO_CHAR(registration_date, 'YYYY') >= '2023' THEN '🌱 새싹 유저'
+        WHEN TO_CHAR(registration_date, 'YYYY') >= '2021' THEN '🌳 기존 유저'
+        ELSE '💎 고인물 유저'
+        END AS "유저 등급", -- END로 CASE 문을 끝낸다
+    p.post_type,
+    CASE p.post_type                -- CASE
+        WHEN 'photo' THEN '사진'    -- WHEN p.post_type = 'photo' THEN '사진'
+        WHEN 'video' THEN '영상'    -- 이런식으로 적어도 됨
+        ELSE '기타'
+        END AS "게시물 종류"
+FROM
+    USERS u, POSTS p
+WHERE
+    u.user_id = p.user_id;
 
