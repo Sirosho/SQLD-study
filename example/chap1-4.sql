@@ -160,3 +160,58 @@ FROM
 WHERE
     u.user_id = p.user_id;
 
+
+select
+           creation_date,
+to_char(creation_date,'YYYY"년" MM"월" DD"일" (DY"요일") '),
+post_id,
+content
+
+from posts
+where post_id = 4
+;
+
+select
+    username,
+    email,
+    REGISTRATION_DATE,
+    LAST_LOGIN_DATE,
+    nvl(to_char(manager_id),'최상위 관리자') AS manager_id
+from users
+;
+
+select *
+from users
+;
+
+select
+    username,
+    email,
+    REGISTRATION_DATE,
+    case
+        when to_char(LAST_LOGIN_DATE,'YYYY-MM-DD') >= '2024-01-01' then '최근 활동 유저'
+        when to_char(LAST_LOGIN_DATE,'YYYY-MM-DD') <= '2024-01-01'
+                 or LAST_LOGIN_DATE is null then '휴면 유저'
+
+    end as "활동상태",
+    nvl(to_char(manager_id),'최상위 관리자') AS manager_id
+from users
+;
+
+select
+    COMMENT_ID,
+    POST_ID,
+    USER_ID,
+    COMMENT_TEXT,
+    CREATION_DATE,
+    case mod(comment_id,2)
+        when 1 then '홀수 댓글'
+        when 0 then '짝수 댓글'
+    end as "댓글 유형"
+
+from comments
+;
+
+
+
+
