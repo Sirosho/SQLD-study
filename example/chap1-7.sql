@@ -35,10 +35,48 @@ INSERT INTO EMPLOYEES (id, name, dept_id)
 VALUES (104, '최민준', 30); -- 기획팀
 
 
+COMMIT;
+
 select *
 from employees;
 select *
 from departments;
+
+
+-- 카티션곱 표준문법
+SELECT *
+FROM EMPLOYEES
+CROSS JOIN DEPARTMENTS
+;
+-- 카티션곱 오라클문법
+SELECT *
+FROM EMPLOYEES,DEPARTMENTS
+;
+
+-- NATURAL JOIN
+-- 겹치는게 있으면 알아서 붙여줄테니 별칭도 빼고 그냥 겹치는 컬럼 하나만 넣어라
+-- NATURAL JOIN은 공통 조인 매칭컬럼의 별칭을 표기해선 안된다.
+    SELECT
+        USER_ID,
+        U.USERNAME,
+        U.EMAIL,
+        UP.FULL_NAME,
+        UP.BIO
+    FROM USERS U
+    NATURAL JOIN USER_PROFILES UP
+    ;
+
+
+SELECT
+   *
+FROM USERS U
+NATURAL JOIN USER_PROFILES UP
+
+;
+
+
+
+
 
 -- JOIN은 두 테이블을 가로로 합치는 문법
 -- X * Y 형태로 결과가 나옵니다.
@@ -209,12 +247,65 @@ ORDER BY U.USER_ID
 ;
 
 
+-- NATURAL JOIN
+-- 겹치는게 있으면 알아서 붙여줄테니 별칭도 빼고 그냥 겹치는 컬럼 하나만 넣어라
+-- NATURAL JOIN은 공통 조인 매칭컬럼의 별칭을 표기해선 안된다.
+SELECT
+    USER_ID,
+    U.USERNAME,
+    U.EMAIL,
+    UP.FULL_NAME,
+    UP.BIO
+FROM USERS U
+NATURAL JOIN USER_PROFILES UP
+;
+
+-- NATURAL JOIN과 결과가 같이 나옴
+SELECT
+    USER_ID,
+    U.USERNAME,
+    U.EMAIL,
+    UP.FULL_NAME,
+    UP.BIO
+FROM USERS U
+JOIN USER_PROFILES UP
+USING (USER_ID)
+;
 
 
+-- SELF JOIN
+SELECT
+    U1.USER_ID,
+    U1.USERNAME,
+    U1.MANAGER_ID,
+    NVL(U2.USERNAME,'상사없음' )AS MANAGER_USERNAME
+FROM USERS U1
+LEFT JOIN USERS U2
+ON U1.MANAGER_ID = U2.USER_ID
+ORDER BY U1.USER_ID
+;
+
+-- 카티션곱 표준문법
+SELECT *
+FROM EMPLOYEES
+         CROSS JOIN DEPARTMENTS
+;
+-- 카티션곱 오라클문법
+SELECT *
+FROM EMPLOYEES,DEPARTMENTS
+;
 
 
+-- '좋아요'를 누른 사용자의 ID 목록 (중복 제거됨)
+SELECT user_id FROM LIKES
+INTERSECT
+-- '댓글'을 작성한 사용자의 ID 목록 (중복 제거됨)
+SELECT user_id FROM COMMENTS;
 
 
-
-
+-- '좋아요'를 누른 사용자의 ID 목록
+SELECT user_id FROM LIKES
+MINUS
+-- '댓글'을 작성한 사용자의 ID 목록
+SELECT user_id FROM COMMENTS;
 
