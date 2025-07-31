@@ -135,7 +135,8 @@ WHERE POST_ID IN (
 )
 ;
 
-
+select *
+FROM USERS;
 
 
 
